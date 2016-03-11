@@ -334,7 +334,7 @@ foreach ($server in $exchangeservers) {
     if ($nulldata) {
         $up=$false;$managed=0;$page_min=0;$page_max=0;$currentpagefile=0;$raminmb=0
     }
-    write-host "The Server $name is up - $up and the page file settings are managed - $Page_Managed, Min - $Page_Min, Max - $Page_Max, Current - $Page_Current and RAM - $RAMinMB MB."
+
     # Store data in an object (PageFileData) and then an array of objects (PageFileDataList)
     $PageFileData = $null
     $PageFileData = New-Object System.Object
