@@ -20,9 +20,9 @@ Function Run-HW002()
         $name = $server.name
 
         # Get server power plan
-        invoke-command -ComputerName $name -ScriptBlock {powercfg -l}
-        $HighPerf = invoke-command -ComputerName $name -ScriptBlock {powercfg -l | %{if($_.contains("High performance")) {$_.split()[3]}}}
-        $CurrPlan = invoke-command -ComputerName $name -ScriptBlock {$(powercfg -getactivescheme).split()[3]}
+        Invoke-Command -ComputerName $name -ScriptBlock {powercfg -l}
+        $HighPerf = Invoke-Command -ComputerName $name -ScriptBlock {powercfg -l | foreach{if($_.contains("High performance")) {$_.split()[3]}}}
+        $CurrPlan = Invoke-Command -ComputerName $name -ScriptBlock {$(powercfg -getactivescheme).split()[3]}
         
         # Validate if the server is set to use the High Performance power plan
         if ($CurrPlan -eq $HighPerf) {
