@@ -16,8 +16,15 @@ Function Run-WSSRV003()
     $ErrorList = @()
 
     $PageFileDataList | foreach-object {
+        
         # Prepare all variables
-        $up=$_.up;$name = $_.name; $managed=$_.page_managed;$page_min=$_.page_min;$page_max=$_.page_max;$currentpagefile=$_.page_current;$RAMinMB=$_.RAMinMB
+        $up = $_.up
+        $name = $_.name
+        $managed=$_.page_managed
+        $page_min=$_.page_min
+        $page_max=$_.page_max
+        $currentpagefile=$_.page_current
+        $RAMinMB=$_.RAMinMB
         $RAMIdeal = $RAMinMB + 10
 
         if ($up -eq $false) {
