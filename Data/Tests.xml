@@ -45,6 +45,17 @@
 		<IfFailedComments>One or more Exchange HTTPS services has a URL containing server FQDNs.</IfFailedComments>
 	</Test>
 
+	<Test>
+		<Id>CAS003</Id>
+		<Category>Client Access</Category>
+		<Name>SSL 3.0 Support</Name>
+		<Description>Check that SSL 3.0 protocol support is disabled</Description>
+        <IfInfoComments/>
+        <IfPassedComments>All Exchange servers have SSL 3.0 disabled.</IfPassedComments>
+		<IfWarningComments/>
+        <IfFailedComments>One or more Exchange servers do not have SSL 3.0 disabled.</IfFailedComments>
+	</Test>
+
     <Test>
 		<Id>POP001</Id>
 		<Category>POP</Category>
@@ -65,6 +76,17 @@
 		<IfPassedComments>No POP services allow insecure logins.</IfPassedComments>
 		<IfWarningComments>One or more POP services may allow insecure logins.</IfWarningComments>
 		<IfFailedComments>One or more POP services allows insecure login.</IfFailedComments>
+	</Test>
+
+	<Test>
+		<Id>POP003</Id>
+		<Category>POP</Category>
+		<Name>POP Protocol Logging</Name>
+		<Description>Check that protocol logging is not enabled for POP.</Description>
+		<IfInfoComments></IfInfoComments>
+		<IfPassedComments>No POP services have protocol logging enabled.</IfPassedComments>
+		<IfWarningComments>One or more POP services has protocol logging enabled.</IfWarningComments>
+		<IfFailedComments></IfFailedComments>
 	</Test>
 
 	<Test>
@@ -103,11 +125,22 @@
 	<Test>
 		<Id>WSSRV001</Id>
 		<Category>Windows Server</Category>
-		<Name>Exchange Install Drive - 30% Free Disk Space</Name>
+		<Name>Exchange Install Drive Free Disk Space</Name>
 		<Description>Check that the Exchange Install Drive has 30% or greater free disk space.</Description>
-		<IfInfoComments/>
-        	<IfPassedComments>The Exchange Install Drive has greater than 30% free disk space.</IfPassedComments>
-        	<IfWarningComments>The Exchange Install Drive has between 15% and 30% free disk space.</IfWarningComments>		
-        	<IfFailedComments>The Exchange Install Drive has less than 15% free disk space.</IfFailedComments>        
+		<IfInfoComments></IfInfoComments>
+        <IfPassedComments>All Exchange install volumes have greater than 30% free disk space.</IfPassedComments>
+       	<IfWarningComments>One or more Exchange install volumes has between 15% and 30% free disk space.</IfWarningComments>		
+       	<IfFailedComments>One or more Exchange install volumes has less than 15% free disk space.</IfFailedComments>        
+	</Test>
+
+	<Test>
+		<Id>HW001</Id>
+		<Category>Hardware</Category>
+		<Name>Physical or Virtual</Name>
+		<Description>Check whether the Exchange Server is Physical or Virtual.</Description>
+		<IfPassedComments/>
+		<IfFailedComments/>
+		<IfInfoComments>All Exchange servers are physical servers.</IfInfoComments>
+		<IfWarningComments>One more more Exchange servers are a virtual server.</IfWarningComments>
 	</Test>
 </Tests>
