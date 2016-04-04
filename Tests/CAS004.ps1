@@ -70,7 +70,7 @@ Function Run-CAS004()
                 $success = $false
             }
         } else {
-            $succes = $false
+            $success = $false
             write-verbose "The server $name is down or unreachable."
         }
         
