@@ -18,22 +18,22 @@ Function Run-WSSRV007()
 
     foreach ($server in $exchangeservers) {
         # Set Variables for the current loop
-        $name = $server.name
+        $ServerName = $server.name
         $ConnectionError = $false
         $tryWMI = $false
         $FirewallState = $null
 
         try {
-            $FirewallState = (Get-CIMInstance -Class win32_service -filter "name = 'mpssvc'" -ComputerName $name -erroraction STOP).startmode
+            $FirewallState = (Get-CIMInstance -Class win32_service -filter "name = 'mpssvc'" -ComputerName $ServerName -erroraction STOP).startmode
         } catch {
             $tryWMI = $true
-            Write-Verbose "$($TestID): Was not able to acquire information for $name via CIM"    
+            Write-Verbose "$($TestID): Was not able to acquire information for $ServerName via CIM"    
         }
         if ($tryWMI) {
             try {
-                $FirewallState = (Get-WmiObject -Class win32_service -filter "name = 'mpssvc'" -ComputerName $name -erroraction STOP).startmode
+                $FirewallState = (Get-WmiObject -Class win32_service -filter "name = 'mpssvc'" -ComputerName $ServerName -erroraction STOP).startmode
             } catch {
-                Write-Verbose "$($TestID): Was not able to acquire information for $name via WMI"    
+                Write-Verbose "$($TestID): Was not able to acquire information for $ServerName via WMI"    
                 $ConnectionError = $true
             }
         }
@@ -44,19 +44,19 @@ Function Run-WSSRV007()
             if ($FirewallState -eq "Auto") {
 
                 # The Windows Firewall service's startup mode is set to Automatic
-                write-verbose "The firewall service on $name is set to Automatic."
-                $PassedList += $($name)
+                write-verbose "The firewall service on $ServerName is set to Automatic."
+                $PassedList += $($ServerName)
             } else {
 
                 # Fail the server for having the service startup mode set to anything but Automatic
-                write-verbose "The firewall service on $name is set to Manual or Disabled and should be set to Automatic."
-                $FailedList += $($name)
+                write-verbose "The firewall service on $ServerName is set to Manual or Disabled and should be set to Automatic."
+                $FailedList += $($ServerName)
             }
         } else {
 
             # Script failed to connect to the server and is added to the warning list
-            write-verbose "There was an issue connecting to the $name server. "
-            $WarningList += $($name)
+            write-verbose "There was an issue connecting to the $ServerName server. "
+            $WarningList += $($ServerName)
         }
     }
 
