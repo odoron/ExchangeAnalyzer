@@ -17,19 +17,52 @@ Function Run-HW002()
     $ErrorList = @()
 
     foreach ($server in $exchangeservers) {
+        # Set Variables for the current loop
+        $CurrPlan = $null
         $name = $server.name
+        $ConnectionError = $false
+        $tryWMI = $false
 
-        # Get server power plan
-        Invoke-Command -ComputerName $name -ScriptBlock {powercfg -l}
-        $HighPerf = Invoke-Command -ComputerName $name -ScriptBlock {powercfg -l | foreach{if($_.contains("High performance")) {$_.split()[3]}}}
-        $CurrPlan = Invoke-Command -ComputerName $name -ScriptBlock {$(powercfg -getactivescheme).split()[3]}
-        
-        # Validate if the server is set to use the High Performance power plan
-        if ($CurrPlan -eq $HighPerf) {
-            write-verbose "The power plan now is set to High Performance."
-            $PassedList += $($name)
+        try {
+            Get-CIMInstance -Class win32_powerplan -ComputerName $name  -Namespace root\cimv2\power -Filter "isactive='true'" -erroraction STOP
+        } catch {
+            $tryWMI = $true
+            Write-Verbose "$($TestID): Was not able to acquire information for $name via CIM"    
+        }
+        if ($tryWMI) {
+            try {
+                Get-WmiObject -Class win32_powerplan -ComputerName $name  -Namespace root\cimv2\power -Filter "isactive='true'" -erroraction STOP
+            } catch {
+                Write-Verbose "$($TestID): Was not able to acquire information for $name via WMI"    
+                $ConnectionError = $true
+            }
+        }
+
+        If ($ConnectionError -eq $false) {
+            try {    
+                $CurrPlan = (Get-CIMInstance -Class win32_powerplan -ComputerName $name  -Namespace root\cimv2\power -Filter "isactive='true'" -erroraction STOP).elementname
+            } catch {
+                Write-Verbose "$($TestID): Was not able to acquire information for $name via CIM"
+                $tryWMI = $true
+            }
+            if ($tryWMI) {
+                try {
+                    $CurrPlan = (Get-WMIObject -Class win32_powerplan -ComputerName $name  -Namespace root\cimv2\power -Filter "isactive='true'" -erroraction STOP).elementname
+                } catch {
+                    Write-Verbose "$($TestID): Was not able to acquire information for $name via WMI"
+                }
+            }
+            
+            # Validate if the server is set to use the High Performance power plan
+            if ($CurrPlan -eq "High performance") {
+                write-verbose "The power plan on $name is set to High Performance."
+                $PassedList += $($name)
+            } else {
+                write-verbose "The power plan on $name is not set to High Performance and is currently set to $currplan."
+                $WarningList += $($name)
+            }
         } else {
-            write-verbose "The power plan is not set to High Performance and is currently set to $currplan."
+            write-verbose "There was an issue connecting to the $name server. "
             $WarningList += $($name)
         }
     }
