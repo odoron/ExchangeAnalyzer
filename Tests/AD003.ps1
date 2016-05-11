@@ -31,7 +31,7 @@ Function Run-AD003()
         } else {
 
             write-verbose "The $ServerName is not a Global Catalog server"
-            $FailedList += "$($ServerName) - is not a Global Catalog server"
+            $InfoList += "$($ServerName) - is not a Global Catalog server"
         }
     }
 
