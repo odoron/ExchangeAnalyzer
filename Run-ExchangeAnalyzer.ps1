@@ -132,8 +132,7 @@ $supportedOutputFileTypes = @("html","htm")
 #Check for presence of Tests.xml file and exit if not found.
 if (!(Test-Path "$($MyDir)\Data\Tests.xml"))
 {
-    Write-Warning "Tests.xml file not found."
-    EXIT
+    throw "Tests.xml file not found."
 }
 
 [xml]$TestsFile = Get-Content "$($MyDir)\Data\Tests.xml"
@@ -213,8 +212,7 @@ try
     #Check for supported servers before continuing
     if (($ExchangeServers | Where {$_.AdminDisplayVersion -like "Version 15.*"}).Count -eq 0)
     {
-        Write-Warning "No Exchange 2013 or later servers were found. Exchange Analyzer is exiting."
-        EXIT
+        throw "No Exchange 2013 or later servers were found. Exchange Analyzer is exiting."
     }
 
     Write-Progress -Activity $ProgressActivity -Status "Get-MailboxDatabase" -PercentComplete 2
@@ -245,9 +243,8 @@ try
 }
 catch
 {
-    Write-Warning "An error has occurred during basic data collection."
-    Write-Warning $_.Exception.Message
-    EXIT
+    Write-Error "An error has occurred during basic data collection."
+    throw $_.Exception.Message
 }
 
 #Get all Exchange HTTPS URLs to use for CAS tests
